@@ -5,12 +5,15 @@ from . settings import weather_root_url, weather_token, ok_codes
 
 def get_current_weather(city: str) -> dict:
     url = f"{weather_root_url}?q={city}&appid={weather_token}&units=metric"
-    res = requests.get(url)
-    if res.status_code in ok_codes:
-        weather_in_city = res.json()
-        return weather_in_city
-    else:
-        print(f"Неудача с запросом: статус {res.status_code}")
+    try:
+        res = requests.get(url)
+        if res.status_code in ok_codes:
+            weather_in_city = res.json()
+            return weather_in_city
+        else:
+            print(f"Неудача с запросом: статус {res.status_code}")
+    except Exception as e:
+        raise Exception(f"Some troubles with request to {url}: {e}")
 
 
 def create_weather_message(city: str) -> str:
@@ -28,7 +31,8 @@ def create_weather_message(city: str) -> str:
         sunset_timestamp = datetime.datetime.fromtimestamp(sunset_unix_time)
         sunset_human_datetime = sunset_timestamp.strftime('%H:%M:%S')
 
-        weather_message = f"В {city} сейчас {weather_description}, средняя температура {median_temp}.\n Рассвет: {sunrise_human_datetime}, закат: {sunset_human_datetime}"
+        weather_message = f"В {city} сейчас {weather_description}, средняя температура {median_temp}.\n Рассвет: " \
+                          f"{sunrise_human_datetime}, закат: {sunset_human_datetime} "
         return weather_message
     else:
         return False

@@ -9,32 +9,34 @@ def get_today_currencies(country_abbr: str):
         url = f"{root_url}?periodicity=0"
     if country_abbr == "uk":
         url = f"{root_url}exchange?json"
-
-    res = requests.get(url)
-    res_code = res.status_code
-    if res_code in ok_codes:
-        raw_currencies = today_currencies = res.json()
-        return raw_currencies
-    else:
-        print(f"Запрос не был выполнен со статусом {res_code}")
+    try:
+        res = requests.get(url)
+        res_code = res.status_code
+        if res_code in ok_codes:
+            raw_currencies = today_currencies = res.json()
+            return raw_currencies
+        else:
+            print(f"Запрос не был выполнен со статусом {res_code}")
+    except Exception as e:
+        raise Exception (f"Some troubles with request to {url}: {e}")
 
 
 def today_currency_by_abbr(country_abbr, currency_abbr):
     today_currencies = get_today_currencies(country_abbr)
     for curr in today_currencies:
-        if country_abbr == "rb":
-            if curr["Cur_Abbreviation"] == currency_abbr.upper():
-                return curr
-        if country_abbr == "uk":
-            if curr["cc"] == currency_abbr.upper():
-                return curr
+        for curr in today_currencies:
+            if country_abbr == "rb":
+                if curr["Cur_Abbreviation"] == currency_abbr.upper():
+                    return curr
+            if country_abbr == "uk":
+                if curr["cc"] == currency_abbr.upper():
+                    return curr
 
 
 def currency_message_to_user(today_currency_info, country_abbr):
     if type(today_currency_info) == dict:
         for key in currency_necessary_keys[country_abbr]:
             if key not in today_currency_info.keys():
-                print(key)
                 return False
 
         if country_abbr == "rb":
@@ -51,3 +53,5 @@ def currency_message_to_user(today_currency_info, country_abbr):
 
         message = f"Cегодня {scale} {money_abbr} стоит {rate} {country_money}"
         return message
+    else:
+        print(f"Какие-то проблемы с входящими данными - {today_currency_info}")
