@@ -1,7 +1,7 @@
 import requests
 from .currencies import today_currency_by_abbr, currency_message_to_user
 from .settings import ok_codes, hello_message, message_unknown_country, available_currency_countries, \
-    something_went_message
+    something_went_message, logger
 from .weather import create_weather_message
 
 
@@ -21,9 +21,11 @@ class TelegramBot:
                 result = res.json()
                 return result
             else:
-                print(f"Неудача с запросом: статус {res.status_code}")
+                logger.error(f"Неудача с запросом: статус {res.status_code}")
         except Exception as e:
-            raise Exception(f'Some troubles with request to {updates_url}: {e}')
+            error_message = f"Some troubles with request to {updates_url}: {e}"
+            logger.error(error_message)
+            raise Exception(error_message)
 
     def send_message(self, chat_id: str, text_message: str) -> bool:
         send_message_url = f"{self.root_url}{self.token}{self.message_endpoint}"
@@ -32,9 +34,10 @@ class TelegramBot:
             if res.status_code in ok_codes:
                 return True
             else:
-                print(f"Не удалось послать сообщение - ошибка с кодом {res.status_code}")
+                logger.error(f"Не удалось послать сообщение - ошибка с кодом {res.status_code}")
         except Exception as e:
-            raise Exception(f'Some troubles with request to {send_message_url}: {e}')
+            error_message = f'Some troubles with request to {send_message_url}: {e}'
+            raise Exception(error_message)
 
     def pooling(self) -> None:
         last_message_number = 0

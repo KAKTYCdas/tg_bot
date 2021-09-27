@@ -1,16 +1,24 @@
 import dotenv
 import os
-
+import logging.config
+import json
+import logging
 
 try:
-	dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-	dotenv.load_dotenv('.env')
-	telegram_bot_token = os.environ['TELEGRAM_BOT_TOKEN']
-	side_weather_token = os.environ["SIDE_WEATHER_TOKEN"]
-	weather_token = os.environ["WEATHER_TOKEN"]
+    dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+    dotenv.load_dotenv('.env')
+    telegram_bot_token = os.environ['TELEGRAM_BOT_TOKEN']
+    side_weather_token = os.environ["SIDE_WEATHER_TOKEN"]
+    weather_token = os.environ["WEATHER_TOKEN"]
 except Exception as e:
-	raise Exception('File .env is not found')
+    raise Exception('File .env is not found')
 
+logger_config_file = os.path.join(os.path.dirname(__file__), 'logging_config.json')
+with open(logger_config_file, 'r') as logger_config:
+    config_dict = json.load(logger_config)
+
+logging.config.dictConfig(config_dict)
+logger = logging.getLogger(__name__)
 
 weather_root_url = "http://api.openweathermap.org/data/2.5/weather"
 

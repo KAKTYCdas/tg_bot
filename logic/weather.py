@@ -1,6 +1,6 @@
 import requests
 import datetime
-from . settings import weather_root_url, weather_token, ok_codes
+from .settings import weather_root_url, weather_token, ok_codes, logger
 
 
 def get_current_weather(city: str) -> dict:
@@ -11,9 +11,11 @@ def get_current_weather(city: str) -> dict:
             weather_in_city = res.json()
             return weather_in_city
         else:
-            print(f"Неудача с запросом: статус {res.status_code}")
+            logger.error(f"Неудача с запросом: статус {res.status_code}")
     except Exception as e:
-        raise Exception(f"Some troubles with request to {url}: {e}")
+        error_message = f"Some troubles with request to {url}: {e}"
+        logger.error(error_message)
+        raise Exception(error_message)
 
 
 def create_weather_message(city: str) -> [str, bool]:
