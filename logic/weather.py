@@ -16,7 +16,7 @@ def get_current_weather(city: str) -> dict:
         raise Exception(f"Some troubles with request to {url}: {e}")
 
 
-def create_weather_message(city: str) -> str:
+def create_weather_message(city: str) -> [str, bool]:
     raw_weather = get_current_weather(city)
     if type(raw_weather) == dict:
 

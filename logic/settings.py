@@ -1,6 +1,16 @@
-telegram_bot_token = "1793454317:AAEzG0o7-vtW2WpkUwdCq73YiGHYJYTViTw"
-side_weather_token = "886705b4c1182eb1c69f28eb8c520e20"
-weather_token = "274e16bcd29fc6003638a44b00f207cd"
+import dotenv
+import os
+
+
+try:
+	dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+	dotenv.load_dotenv('.env')
+	telegram_bot_token = os.environ['TELEGRAM_BOT_TOKEN']
+	side_weather_token = os.environ["SIDE_WEATHER_TOKEN"]
+	weather_token = os.environ["WEATHER_TOKEN"]
+except Exception as e:
+	raise Exception('File .env is not found')
+
 
 weather_root_url = "http://api.openweathermap.org/data/2.5/weather"
 
