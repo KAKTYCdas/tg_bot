@@ -8,6 +8,7 @@
 6. Добавлена обработка Exceptions, работа по Unhappy-pass
 7. Добавлено виртуальное окружение (pipenv), токены вынесены в переменные среды.
 8. Добавлено логгирование, gitignore взят из шаблона.
+9. Бот упакован в Docker-контейнер.
 
 Команды:
 
@@ -25,11 +26,13 @@
 
 ### Подготовка и запуск
 
+В контейнере:
 ```bash
-pipenv shell
-pipenv sync
+sudo docker build -t bot_image:bot_image . 
+sudo docker run bot_image:bot_image
 ```
 
+Без контейнера:
 ```bash
 python run.py
 ```
